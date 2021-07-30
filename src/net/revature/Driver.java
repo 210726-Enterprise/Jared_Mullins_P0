@@ -50,20 +50,54 @@ public class Driver {
                     break;
                 case 2:
                     System.out.println("Registering new user");
-                    registerNewUser();
+                    registerNewUser(allUsers);
                     break;
                 default:
                     System.out.println("Unknown error");
             }
+            startBanking(allUsers, currentUser);
 
         } else {
+            Scanner scanner = new Scanner(System.in);
             System.out.println("USER MENU:");
             System.out.println("What would you like to do?: ");
+            System.out.println("(1) Make Deposit");
+            System.out.println("(2) Make Withdrawal");
+            System.out.println("(3) Check Balance");
+            System.out.println("(0) Logout");
+            int choice = scanner.nextInt();
+
+            switch(choice) {
+                case 0:
+                    currentUser = logout(currentUser);
+                    break;
+                case 1:
+                    System.out.println("How much are you depositing?");
+                    double depositAmount = scanner.nextDouble();
+                    currentUser.getAccount().makeDeposit(depositAmount);
+                    break;
+                case 2:
+                    System.out.println("How much would you like to withdrawal?");
+                    double withdrawalAmount = scanner.nextDouble();
+                    currentUser.getAccount().makeWithdrawal(withdrawalAmount);
+                    break;
+                case 3:
+                    System.out.println("Current balance: " + currentUser.getAccount().getBalance());
+                    break;
+                default:
+                    System.out.println("Invalid command");
+            }
+            System.out.println(currentUser);
+            startBanking(allUsers, currentUser);
         }
-        startBanking(allUsers, currentUser);
     }
 
-    public static void registerNewUser() {
+    public static User logout(User currentUser) {
+        currentUser.logout();
+        return null;
+    }
+
+    public static void registerNewUser(UserStorage allUsers) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your username");
         String username = scanner.nextLine();
@@ -73,11 +107,12 @@ public class Driver {
         String email = scanner.nextLine();
 
         User newUser = new User(username, password, email, new Account());
+        allUsers.add(newUser);
+
         System.out.println("Successfully created new user! \n***");
         System.out.println("Username: " + newUser.getUsername());
         System.out.println("Email Address: " + newUser.getEmailAddress());
         System.out.println("Account Number: " + newUser.getAccount().getAccountNumber() + "\n***");
-        scanner.close();
     }
 
     public static User verifyUser(UserStorage allUsers) {
