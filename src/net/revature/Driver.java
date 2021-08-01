@@ -13,7 +13,7 @@ public class Driver {
         User jared = new User("jwmullins", "secret", "jwm@gmail.com", new Account());
         allUsers.add(jared);
 
-        startBanking(allUsers, null);
+        startBanking(allUsers);
         
 
 //        User chelsea = new User("ckmullins", "secret", "ckm@gmail.com", new Account());
@@ -25,10 +25,7 @@ public class Driver {
 
     }
 
-    public static void startBanking(UserStorage allUsers, User user) {
-        User currentUser = user;
-
-        if(currentUser == null) {
+    public static void startBanking(UserStorage allUsers) {
             System.out.println("MAIN MENU:");
             System.out.println("What would you like to do?");
             System.out.println("(1) Login");
@@ -36,65 +33,61 @@ public class Driver {
             System.out.println("(0) Exit");
 
             Scanner scanner = new Scanner(System.in);
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 0:
-                    return;
-                case 1:
-                    currentUser = verifyUser(allUsers);
-                    if (currentUser != null) {
-                        currentUser.login();
-                        System.out.println("Hello " + currentUser.getUsername());
-                    }
-                    break;
-                case 2:
-                    System.out.println("Registering new user");
-                    registerNewUser(allUsers);
-                    break;
-                default:
-                    System.out.println("Unknown error");
+            if(scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 0:
+                        return;
+                    case 1:
+                        User user = login(allUsers);
+                        if (user != null) {
+                            loadUserMenu(user);
+                        }
+                        break;
+                    case 2:
+                        System.out.println("Registering new user");
+                        registerNewUser(allUsers);
+                        break;
+                }
+            } else {
+                System.out.println("Invalid input.");
             }
-            startBanking(allUsers, currentUser);
-
-        } else {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("USER MENU:");
-            System.out.println("What would you like to do?: ");
-            System.out.println("(1) Make Deposit");
-            System.out.println("(2) Make Withdrawal");
-            System.out.println("(3) Check Balance");
-            System.out.println("(0) Logout");
-            int choice = scanner.nextInt();
-
-            switch(choice) {
-                case 0:
-                    currentUser = logout(currentUser);
-                    break;
-                case 1:
-                    System.out.println("How much are you depositing?");
-                    double depositAmount = scanner.nextDouble();
-                    currentUser.getAccount().makeDeposit(depositAmount);
-                    break;
-                case 2:
-                    System.out.println("How much would you like to withdrawal?");
-                    double withdrawalAmount = scanner.nextDouble();
-                    currentUser.getAccount().makeWithdrawal(withdrawalAmount);
-                    break;
-                case 3:
-                    System.out.println("Current balance: " + currentUser.getAccount().getBalance());
-                    break;
-                default:
-                    System.out.println("Invalid command");
-            }
-            System.out.println(currentUser);
-            startBanking(allUsers, currentUser);
+            startBanking(allUsers);
         }
-    }
 
-    public static User logout(User currentUser) {
-        currentUser.logout();
-        return null;
+    public static void loadUserMenu(User user) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("USER MENU:");
+        System.out.println("Hello " + user.getUsername());
+        System.out.println("What would you like to do?: ");
+        System.out.println("(1) Make Deposit");
+        System.out.println("(2) Make Withdrawal");
+        System.out.println("(3) Check Balance");
+        System.out.println("(0) Logout");
+        int choice = scanner.nextInt();
+
+        switch(choice) {
+            case 0:
+                return;
+            case 1:
+                System.out.println("How much are you depositing?");
+                double depositAmount = scanner.nextDouble();
+                user.getAccount().makeDeposit(depositAmount);
+                break;
+            case 2:
+                System.out.println("How much would you like to withdraw?");
+                double withdrawalAmount = scanner.nextDouble();
+                user.getAccount().makeWithdrawal(withdrawalAmount);
+                break;
+            case 3:
+                System.out.println("\n*****");
+                System.out.printf("Current balance: $%,.2f %n", user.getAccount().getBalance());
+                System.out.println("*****\n");
+                break;
+            default:
+                System.out.println("Invalid command");
+        }
+        loadUserMenu(user);
     }
 
     public static void registerNewUser(UserStorage allUsers) {
@@ -115,7 +108,7 @@ public class Driver {
         System.out.println("Account Number: " + newUser.getAccount().getAccountNumber() + "\n***");
     }
 
-    public static User verifyUser(UserStorage allUsers) {
+    public static User login(UserStorage allUsers) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Username:");
         String username = scanner.nextLine();
