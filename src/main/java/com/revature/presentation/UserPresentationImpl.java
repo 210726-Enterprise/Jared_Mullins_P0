@@ -72,7 +72,7 @@ public class UserPresentationImpl implements UserPresentation{
                 case 0:
                     return;
                 case 1:
-                    loadUserAccountsMenu(user);
+                    accountP.loadUserAccountsIndex(user);
                     break;
                 case 2:
                     accountP.openNewAccountMenu(user);
@@ -91,10 +91,6 @@ public class UserPresentationImpl implements UserPresentation{
             loadUserMenu(user);
         }
         loadUserMenu(user);
-    }
-
-    public void loadUserAccountsMenu(User user) {
-
     }
 
     //TODO Create better exit options

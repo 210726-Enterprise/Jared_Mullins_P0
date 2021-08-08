@@ -1,5 +1,6 @@
 package com.revature.repo;
 
+import com.revature.collection.RevArrayList;
 import com.revature.model.Account;
 import com.revature.model.User;
 
@@ -16,4 +17,10 @@ public interface AccountDAO {
 
     //DELETE
     void deleteAccount();
+
+    RevArrayList<Account> selectAccountByUser(User user);
+
+    void updateBalance(Account account, double withdrawalOrDepositAmount);
+
+    double selectBalanceByAccount(Account account);
 }
