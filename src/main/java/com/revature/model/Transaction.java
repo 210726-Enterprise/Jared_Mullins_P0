@@ -1,10 +1,13 @@
 package com.revature.model;
 
+import java.util.Date;
+
 public class Transaction {
     private int transactionId;
     private double transactionAmount;
     private String note;
     private int accountNumber;
+    private Date transactionDate;
 
     public Transaction() {
     }

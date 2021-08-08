@@ -1,15 +1,31 @@
 package com.revature.model;
 
 public class User {
+    private int userId;
     private String username;
     private String password;
 
     public User() {
     }
 
+    //TODO revisit whether or not I need a two-arg constructor
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(int userId, String username, String password) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {

@@ -3,12 +3,17 @@ package com.revature.model;
 public class Account {
     private int accountNumber;
     private double balance;
-    private final String type;
+    private String type;
+    private int accountPrimary;
 
-    public Account(int accountNumber, double balance, String type) {
+    public Account() {
+    }
+
+    public Account(int accountNumber, double balance, String type, int accountPrimary) {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.type = type;
+        this.accountPrimary = accountPrimary;
     }
 
     @Override
@@ -18,6 +23,14 @@ public class Account {
                 ", balance=" + balance +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    public int getAccountPrimary() {
+        return accountPrimary;
+    }
+
+    public void setAccountPrimary(int accountPrimary) {
+        this.accountPrimary = accountPrimary;
     }
 
     public String getType() {
