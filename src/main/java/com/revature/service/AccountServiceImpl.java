@@ -40,23 +40,36 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void makeDeposit(Account account, double depositAmount) {
+    public boolean makeDeposit(Account account, double depositAmount) {
         if(depositAmount <= 0) {
-            System.out.println("Invalid deposit amount");
+            System.out.println("\n*****");
+            System.out.println("INVALID DEPOSIT AMOUNT");
             System.out.println("Please enter an amount greater than $0.00");
+            System.out.println("*****");
+            return false;
         }
         aDAO.updateBalance(account, depositAmount);
+        return true;
     }
 
     @Override
-    public void makeWithdrawal(Account account, double wAmount) {
-        if(wAmount > account.getBalance()) {
-            System.out.println("Insufficient Funds");
+    public boolean makeWithdrawal(Account account, double wAmount) {
+        if(wAmount > getBalanceByAccount(account)) {
+            System.out.println("\n*****");
+            System.out.println("INSUFFICIENT FUNDS");
             System.out.printf("Current Balance: $%,.2f %n", getBalanceByAccount(account));
-            return;
+            System.out.println("*****");
+            return false;
+        } else if (wAmount <= 0) {
+            System.out.println("\n*****");
+            System.out.println("INVALID WITHDRAWAL AMOUNT");
+            System.out.println("Please enter an amount greater than $0.00");
+            System.out.println("*****");
+            return false;
         }
         wAmount *= -1;
         aDAO.updateBalance(account, wAmount);
+        return true;
     }
 
     @Override

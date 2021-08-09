@@ -16,9 +16,9 @@ public interface AccountService {
 
     RevArrayList<Account> getAccountByUser(User user);
 
-    void makeDeposit(Account account, double depositAmount);
+    boolean makeDeposit(Account account, double depositAmount);
 
-    void makeWithdrawal(Account account, double wAmount);
+    boolean makeWithdrawal(Account account, double wAmount);
 
     double getBalanceByAccount(Account account);
 }

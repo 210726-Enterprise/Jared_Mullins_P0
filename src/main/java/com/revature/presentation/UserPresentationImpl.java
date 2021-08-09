@@ -18,7 +18,8 @@ public class UserPresentationImpl implements UserPresentation{
     public void loadMainMenu() {
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("MAIN MENU");
+        System.out.println("\nMAIN MENU");
+        System.out.println("==========");
         System.out.println("What would you like to do?");
         System.out.println("1) Login");
         System.out.println("2) Register User Account");
@@ -33,7 +34,7 @@ public class UserPresentationImpl implements UserPresentation{
                 case 1:
                     User user = login();
                     if(user != null) {
-                        System.out.println("\nWelcome " + user.getUsername() + "!\n");
+                        System.out.println("\nWelcome " + user.getUsername() + "!");
                         loadUserMenu(user);
                     } else {
                         System.out.println("Returning to Main Menu");
@@ -59,12 +60,13 @@ public class UserPresentationImpl implements UserPresentation{
         AccountPresentation accountP = new AccountPresentationImpl();
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("USER MENU\n");
+        System.out.println("\nUSER MENU");
+        System.out.println("==========");
         System.out.println("What would you like to do?");
         System.out.println("1) View Accounts");
         System.out.println("2) Open a new Bank Account");
         System.out.println("3) Delete User Account");
-        System.out.println("0) Logout\n");
+        System.out.println("0) Logout");
 
         if(sc.hasNextInt()) {
             int choice = sc.nextInt();
@@ -78,17 +80,18 @@ public class UserPresentationImpl implements UserPresentation{
                     accountP.openNewAccountMenu(user);
                     break;
                 case 3:
-                    loadDeletePath(user);
-                    return;
+                    boolean success = loadDeletePath(user);
+                    if(success) {
+                        return;
+                    }
+                    break;
                 default:
                     System.out.println("Invalid input");
-                    loadUserMenu(user);
                     break;
             }
         } else {
             //TODO fix error feedback with default above as well
             System.out.println("Invalid input");
-            loadUserMenu(user);
         }
         loadUserMenu(user);
     }
@@ -102,12 +105,13 @@ public class UserPresentationImpl implements UserPresentation{
         String password = null;
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("PLEASE ENTER YOUR CREDENTIALS OR ENTER '0' TO RETURN TO MAIN MENU");
+        System.out.println("\nPLEASE ENTER YOUR CREDENTIALS OR ENTER '0' TO RETURN TO MAIN MENU");
 
         System.out.print("\nEnter your username: ");
 
         if(sc.hasNextInt()) {
             if(sc.nextInt() == 0) return null;
+            //TODO clean up feedback
             System.out.println("Invalid input");
             login();
         }
@@ -121,7 +125,7 @@ public class UserPresentationImpl implements UserPresentation{
             login();
         }
 
-        System.out.print("\nEnter your password: ");
+        System.out.print("Enter your password: ");
         if(sc.hasNextLine()) {
             password = sc.nextLine();
         } else {
@@ -133,6 +137,7 @@ public class UserPresentationImpl implements UserPresentation{
         if(user != null && user.getPassword().equals(password)) {
             return user;
         } else {
+            //TODO cleanup feedback
             System.out.println("Incorrect username or password");
             login();
         }
@@ -141,22 +146,32 @@ public class UserPresentationImpl implements UserPresentation{
     }
 
     //TODO Move to User Service
+    //TODO NEEDS TO VERIFY USERNAME IS UNIQUE. Currently getting exception
     public boolean registerNewUser() {
+
+        RevArrayList<User> allUsers = service.getAllUsers();
+
         String username = null;
         String password = null;
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("REGISTERING NEW USER");
+        System.out.println("\nREGISTERING NEW USER");
         System.out.print("Enter a username: ");
 
 
         if(scanner.hasNextLine()) {
             //TODO Verify username is unique
             username = scanner.nextLine();
+            for(int i = 0; i < allUsers.size(); i++) {
+                if(username.equals(allUsers.get(i).getUsername())) {
+                    System.out.println("\nSorry, that username is already taken.");
+                    return false;
+                }
+            }
         } else {
             //TODO Give better error feedback when more fully built out
             System.out.println("Unexpected Error");
-            loadMainMenu();
+            return false;
         }
 
         System.out.print("Enter a password: ");
@@ -166,7 +181,7 @@ public class UserPresentationImpl implements UserPresentation{
         } else {
             //TODO Give better error feedback when more fully built out
             System.out.println("Unexpected Error");
-            loadMainMenu();
+            return false;
         }
         //TODO two-arg User constructor used
         User newUser = new User(username, password);
@@ -181,10 +196,10 @@ public class UserPresentationImpl implements UserPresentation{
         }
     }
 
-    public void loadDeletePath(User user) {
+    public boolean loadDeletePath(User user) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("WARNING: Deleting your User Profile will permanently delete all your accounts and transaction history.");
-        System.out.println("Do you still wish to proceed? y/n");
+        System.out.println("\n***WARNING: Deleting your User Profile will permanently delete all your accounts and transaction history.");
+        System.out.println("\nDo you still wish to proceed? y/n");
 
         if(sc.hasNextLine()) {
             String choice = sc.nextLine();
@@ -196,7 +211,7 @@ public class UserPresentationImpl implements UserPresentation{
                         if(username.equals(user.getUsername())) {
                             service.deleteUser(user);
                             System.out.println("Successfully deleted User");
-                            return;
+                            return true;
                         } else {
                             //TODO clean up feedback
                             System.out.println("Could not delete user");
@@ -204,22 +219,21 @@ public class UserPresentationImpl implements UserPresentation{
                     } else {
                         //TODO clean up feedback
                         System.out.println("Invalid input");
-                        loadDeletePath(user);
                     }
                     break;
                 case "n":
-                    System.out.println("Returning to User Menu");
-                    return;
+                    System.out.println("Returning to User Menu...");
+                    return false;
                 default:
                     //TODO clean up feedback
                     System.out.println("Invalid input");
-                    loadDeletePath(user);
+                    break;
             }
         } else {
             //TODO clean up feedback
             System.out.println("Invalid input");
-            loadDeletePath(user);
         }
+        return false;
     }
 
     @Override
