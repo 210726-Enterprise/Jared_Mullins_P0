@@ -17,9 +17,31 @@ public class UserServiceImpl implements UserService{
     //CREATE
 
     @Override
-    public boolean createUser(User user) {
-        uDao.insertUser(user);
+    public boolean createUser(String username, String password) {
+        RevArrayList<User> allUsers = getAllUsers();
+
+        for(int i = 0; i < allUsers.size(); i++) {
+            if(username.equals(allUsers.get(i).getUsername())) {
+                System.out.println("\nSorry, that username is already taken.");
+                return false;
+            }
+        }
+        User newUser = new User(username, password);
+        uDao.insertUser(newUser);
         return true;
+    }
+
+    @Override
+    public User verifyUser(String username, String password) {
+        RevArrayList<User> allUsers = getAllUsers();
+        User user = uDao.selectUserByUsername(username);
+        if(user != null && user.getPassword().equals(password)) {
+            return user;
+        } else {
+            //TODO cleanup feedback
+            System.out.println("Incorrect username or password");
+        }
+        return null;
     }
 
     //READ

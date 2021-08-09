@@ -33,11 +33,33 @@ public class AccountPresentationImpl implements AccountPresentation{
                     return;
                 case 1:
                     accountType = "Checking";
-                    service.createAccount(user, accountType);
+                    boolean success = service.createAccount(user, accountType);
+                    if(success) {
+                       RevArrayList<Account> accounts = service.getAccountByUserId(user.getUserId());
+                       Account newAccount = accounts.get(accounts.size() - 1);
+                        System.out.println("\nSuccessfully created new account");
+                        System.out.println("================================");
+                        System.out.println("Account Number: " + newAccount.getAccountNumber());
+                        System.out.println("Account Type: " + newAccount.getType());
+                        System.out.printf("Account Balance: $%,.2f %n", newAccount.getBalance());
+                    } else {
+                        System.out.println("Could not create account");
+                    }
                     break;
                 case 2:
                     accountType = "Savings";
-                    service.createAccount(user, accountType);
+                    boolean successful = service.createAccount(user, accountType);
+                    if(successful) {
+                        RevArrayList<Account> accounts = service.getAccountByUserId(user.getUserId());
+                        Account newAccount = accounts.get(accounts.size() - 1);
+                        System.out.println("\nSuccessfully created new account");
+                        System.out.println("================================");
+                        System.out.println("Account Number: " + newAccount.getAccountNumber());
+                        System.out.println("Account Type: " + newAccount.getType());
+                        System.out.printf("Account Balance: $%,.2f %n", newAccount.getBalance());
+                    } else {
+                        System.out.println("Could not create account");
+                    }
                     break;
                 case 3:
                     //TODO fix feedback
@@ -52,13 +74,12 @@ public class AccountPresentationImpl implements AccountPresentation{
         }
 
         //TODO Display account details here
-        System.out.println("Successfully created new account!");
     }
 
     @Override
     public void loadUserAccountsIndex(User user) {
         Scanner sc = new Scanner(System.in);
-        RevArrayList<Account> accounts = service.getAccountByUser(user);
+        RevArrayList<Account> accounts = service.getAccountByUserId(user.getUserId());
 
         if(accounts.size() == 0) {
             System.out.println("You do not have any accounts.");
@@ -112,19 +133,19 @@ public class AccountPresentationImpl implements AccountPresentation{
                 case 1:
                     //TODO getting the account balance may not work correctly
                     System.out.println("\n*****");
-                    System.out.printf("Current Balance: $%,.2f %n", service.getBalanceByAccount(account));
+                    System.out.printf("Current Balance: $%,.2f %n", service.getBalanceByAccountNumber(account.getAccountNumber()));
                     System.out.println("*****");
                     break;
                 case 2:
                     System.out.println("\nHow much would you like to deposit?");
                     if(sc.hasNextDouble()) {
                         double depositAmount = sc.nextDouble();
-                        boolean success = service.makeDeposit(account, depositAmount);
+                        boolean success = service.makeDeposit(account.getAccountNumber(), depositAmount);
 
                         if(success) {
                             System.out.println("\n*****");
                             System.out.printf("Successfully deposited $%,.2f %n", depositAmount);
-                            System.out.printf("New balance: $%,.2f %n", service.getBalanceByAccount(account));
+                            System.out.printf("New balance: $%,.2f %n", service.getBalanceByAccountNumber(account.getAccountNumber()));
                             System.out.println("*****");
                         }
 
@@ -137,12 +158,12 @@ public class AccountPresentationImpl implements AccountPresentation{
                     System.out.println("\nHow much would you like to withdraw");
                     if(sc.hasNextDouble()) {
                         double wAmount = sc.nextDouble();
-                        boolean success = service.makeWithdrawal(account, wAmount);
+                        boolean success = service.makeWithdrawal(account.getAccountNumber(), wAmount);
 
                         if(success) {
                             System.out.println("\n*****");
                             System.out.printf("Successfully withdrew $%,.2f %n", wAmount);
-                            System.out.printf("New balance: $%,.2f %n", service.getBalanceByAccount(account));
+                            System.out.printf("New balance: $%,.2f %n", service.getBalanceByAccountNumber(account.getAccountNumber()));
                             System.out.println("*****");
                         }
 

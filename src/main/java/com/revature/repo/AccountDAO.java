@@ -7,7 +7,7 @@ import com.revature.model.User;
 public interface AccountDAO {
 
     //CREATE
-    void insertAccount(User user, String accountType);
+    boolean insertAccount(User user, String accountType);
 
     //READ
     Account selectAccountByPrimary(User user);
@@ -18,9 +18,11 @@ public interface AccountDAO {
     //DELETE
     void deleteAccount();
 
-    RevArrayList<Account> selectAccountByUser(User user);
+    RevArrayList<Account> selectAccountByUserId(int userId);
 
-    void updateBalance(Account account, double withdrawalOrDepositAmount);
+    void updateBalance(int accountNumber, double withdrawalOrDepositAmount);
 
-    double selectBalanceByAccount(Account account);
+    double selectBalanceByAccountNumber(int accountNumber);
+
+    Account selectAccountByAccountNumber(int accountNumber);
 }

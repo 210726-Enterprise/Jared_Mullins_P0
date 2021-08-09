@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class AccountDAOImpl implements AccountDAO{
 
     @Override
-    public void insertAccount(User user, String accountType) {
+    public boolean insertAccount(User user, String accountType) {
         Connection conn = ConnectionFactory.connect();
         String sql = "INSERT INTO accounts (balance, account_type, account_primary) values (0, ?, ?)";
         String sql2 = "INSERT INTO users_accounts (account_number, user_id) values (?, ?) ";
@@ -27,9 +27,11 @@ public class AccountDAOImpl implements AccountDAO{
             ps2.setInt(1, selectAccountByPrimary(user).getAccountNumber());
             ps2.setInt(2, user.getUserId());
             ps2.execute();
+            return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        return false;
     }
 
     @Override
@@ -72,13 +74,13 @@ public class AccountDAOImpl implements AccountDAO{
     }
 
     @Override
-    public RevArrayList<Account> selectAccountByUser(User user) {
+    public RevArrayList<Account> selectAccountByUserId(int userId) {
         RevArrayList<Account> accounts = new RevArrayList<>();
         Connection conn = ConnectionFactory.connect();
         String sql = "SELECT * FROM accounts WHERE account_number IN (SELECT account_number FROM users_accounts WHERE user_id = ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, user.getUserId());
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
@@ -99,14 +101,14 @@ public class AccountDAOImpl implements AccountDAO{
     }
 
     @Override
-    public void updateBalance(Account account, double withdrawalOrDepositAmount) {
+    public void updateBalance(int accountNumber, double withdrawalOrDepositAmount) {
         Connection conn = ConnectionFactory.connect();
         String sql = "UPDATE accounts SET balance = ? WHERE account_number = ?";
         try {
             //TODO URGENT figure out why this is rounding to nearest dollar
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setDouble(1, selectBalanceByAccount(account) + withdrawalOrDepositAmount);
-            ps.setInt(2, account.getAccountNumber());
+            ps.setDouble(1, selectBalanceByAccountNumber(accountNumber) + withdrawalOrDepositAmount);
+            ps.setInt(2, accountNumber);
             ps.execute();
             conn.close();
         } catch (SQLException throwables) {
@@ -115,14 +117,14 @@ public class AccountDAOImpl implements AccountDAO{
     }
 
     @Override
-    public double selectBalanceByAccount(Account account) {
+    public double selectBalanceByAccountNumber(int accountNumber) {
         double balance = 0;
         Connection conn = ConnectionFactory.connect();
         String sql = "SELECT balance FROM accounts WHERE account_number = ?";
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, account.getAccountNumber());
+            ps.setInt(1, accountNumber);
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
@@ -136,5 +138,32 @@ public class AccountDAOImpl implements AccountDAO{
         }
         //TODO figure out a better bad return
         return -1;
+    }
+
+    @Override
+    public Account selectAccountByAccountNumber(int accountNumber) {
+        Account account = null;
+        Connection conn = ConnectionFactory.connect();
+        String sql = "SELECT * FROM accounts WHERE account_number = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountNumber);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                account = new Account(
+                        rs.getInt("account_number"),
+                        rs.getInt("balance"),
+                        rs.getString("account_type"),
+                        rs.getInt("account_primary")
+                );
+            }
+
+            conn.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return account;
     }
 }

@@ -15,13 +15,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void createAccount(User user, String accountType) {
-        aDAO.insertAccount(user, accountType);
+    public boolean createAccount(User user, String accountType) {
+        return aDAO.insertAccount(user, accountType);
     }
 
     @Override
-    public Account getAccount() {
-        return null;
+    public Account getAccountByAccountNumber(int accountNumber) {
+        return aDAO.selectAccountByAccountNumber(accountNumber);
     }
 
     @Override
@@ -35,12 +35,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public RevArrayList<Account> getAccountByUser(User user) {
-        return aDAO.selectAccountByUser(user);
+    public RevArrayList<Account> getAccountByUserId(int userId) {
+        return aDAO.selectAccountByUserId(userId);
     }
 
     @Override
-    public boolean makeDeposit(Account account, double depositAmount) {
+    public boolean makeDeposit(int accountNumber, double depositAmount) {
         if(depositAmount <= 0) {
             System.out.println("\n*****");
             System.out.println("INVALID DEPOSIT AMOUNT");
@@ -48,16 +48,16 @@ public class AccountServiceImpl implements AccountService {
             System.out.println("*****");
             return false;
         }
-        aDAO.updateBalance(account, depositAmount);
+        aDAO.updateBalance(accountNumber, depositAmount);
         return true;
     }
 
     @Override
-    public boolean makeWithdrawal(Account account, double wAmount) {
-        if(wAmount > getBalanceByAccount(account)) {
+    public boolean makeWithdrawal(int accountNumber, double wAmount) {
+        if(wAmount > getBalanceByAccountNumber(accountNumber)) {
             System.out.println("\n*****");
             System.out.println("INSUFFICIENT FUNDS");
-            System.out.printf("Current Balance: $%,.2f %n", getBalanceByAccount(account));
+            System.out.printf("Current Balance: $%,.2f %n", getBalanceByAccountNumber(accountNumber));
             System.out.println("*****");
             return false;
         } else if (wAmount <= 0) {
@@ -68,12 +68,12 @@ public class AccountServiceImpl implements AccountService {
             return false;
         }
         wAmount *= -1;
-        aDAO.updateBalance(account, wAmount);
+        aDAO.updateBalance(accountNumber, wAmount);
         return true;
     }
 
     @Override
-    public double getBalanceByAccount(Account account) {
-        return aDAO.selectBalanceByAccount(account);
+    public double getBalanceByAccountNumber(int accountNumber) {
+        return aDAO.selectBalanceByAccountNumber(accountNumber);
     }
 }

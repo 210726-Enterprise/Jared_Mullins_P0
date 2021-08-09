@@ -6,19 +6,19 @@ import com.revature.model.User;
 
 public interface AccountService {
 
-    void createAccount(User user, String accountType);
+    boolean createAccount(User user, String accountType);
 
-    Account getAccount();
+    Account getAccountByAccountNumber(int accountNumber);
 
     void updateAccount();
 
     void deleteAccount();
 
-    RevArrayList<Account> getAccountByUser(User user);
+    RevArrayList<Account> getAccountByUserId(int userId);
 
-    boolean makeDeposit(Account account, double depositAmount);
+    boolean makeDeposit(int accountNumber, double depositAmount);
 
-    boolean makeWithdrawal(Account account, double wAmount);
+    boolean makeWithdrawal(int accountNumber, double wAmount);
 
-    double getBalanceByAccount(Account account);
+    double getBalanceByAccountNumber(int accountNumber);
 }

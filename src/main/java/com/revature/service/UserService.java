@@ -5,8 +5,10 @@ import com.revature.model.User;
 
 public interface UserService {
 
-    boolean createUser(User user);
+    boolean createUser(String username, String password);
 
+
+    User verifyUser(String username, String password);
     User getUserByUsername(String username);
     User getUserByAccountNumber(int accountNumber);
     RevArrayList<User> getAllUsers();

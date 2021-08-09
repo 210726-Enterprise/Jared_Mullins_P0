@@ -100,7 +100,6 @@ public class UserPresentationImpl implements UserPresentation{
     //TODO Move to User Service
     public User login() {
         User user = null;
-        RevArrayList<User> allUsers = service.getAllUsers();
         String username = null;
         String password = null;
 
@@ -113,12 +112,10 @@ public class UserPresentationImpl implements UserPresentation{
             if(sc.nextInt() == 0) return null;
             //TODO clean up feedback
             System.out.println("Invalid input");
-            login();
         }
 
         if(sc.hasNextLine()) {
-            username = sc.nextLine();
-            user = service.getUserByUsername(username);
+            username = sc.nextLine();;
         } else {
             //TODO cleanup error feedback
             System.out.println("Invalid input");
@@ -131,62 +128,38 @@ public class UserPresentationImpl implements UserPresentation{
         } else {
             //TODO cleanup error feedback
             System.out.println("Invalid input");
-            login();
         }
-
-        if(user != null && user.getPassword().equals(password)) {
-            return user;
-        } else {
-            //TODO cleanup feedback
-            System.out.println("Incorrect username or password");
-            login();
-        }
-
-        return null;
+        return service.verifyUser(username, password);
     }
 
     //TODO Move to User Service
     //TODO NEEDS TO VERIFY USERNAME IS UNIQUE. Currently getting exception
     public boolean registerNewUser() {
-
-        RevArrayList<User> allUsers = service.getAllUsers();
-
         String username = null;
         String password = null;
-
         Scanner scanner = new Scanner(System.in);
+
         System.out.println("\nREGISTERING NEW USER");
+
         System.out.print("Enter a username: ");
-
-
         if(scanner.hasNextLine()) {
-            //TODO Verify username is unique
             username = scanner.nextLine();
-            for(int i = 0; i < allUsers.size(); i++) {
-                if(username.equals(allUsers.get(i).getUsername())) {
-                    System.out.println("\nSorry, that username is already taken.");
-                    return false;
-                }
-            }
         } else {
             //TODO Give better error feedback when more fully built out
-            System.out.println("Unexpected Error");
+            System.out.println("Invalid input");
             return false;
         }
 
         System.out.print("Enter a password: ");
-
         if(scanner.hasNextLine()) {
             password = scanner.nextLine();
         } else {
             //TODO Give better error feedback when more fully built out
-            System.out.println("Unexpected Error");
+            System.out.println("Invalid input");
             return false;
         }
-        //TODO two-arg User constructor used
-        User newUser = new User(username, password);
-        service.createUser(newUser);
-        return true;
+
+        return service.createUser(username, password);
     }
 
     public void displayAllUsers() {
@@ -204,6 +177,7 @@ public class UserPresentationImpl implements UserPresentation{
         if(sc.hasNextLine()) {
             String choice = sc.nextLine();
             switch (choice) {
+
                 case "y":
                     System.out.print("Enter your username to permanently delete your profile: ");
                     if(sc.hasNextLine()) {
@@ -221,9 +195,11 @@ public class UserPresentationImpl implements UserPresentation{
                         System.out.println("Invalid input");
                     }
                     break;
+
                 case "n":
                     System.out.println("Returning to User Menu...");
                     return false;
+
                 default:
                     //TODO clean up feedback
                     System.out.println("Invalid input");
