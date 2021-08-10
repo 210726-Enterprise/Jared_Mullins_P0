@@ -1,6 +1,5 @@
 package com.revature.presentation;
 
-import com.revature.collection.RevArrayList;
 import com.revature.model.User;
 import com.revature.service.UserService;
 import com.revature.service.UserServiceImpl;
@@ -15,7 +14,7 @@ public class UserPresentationImpl implements UserPresentation{
         service = new UserServiceImpl();
     }
 
-    public void loadMainMenu() {
+    public void displayMainMenu() {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nMAIN MENU");
@@ -35,7 +34,7 @@ public class UserPresentationImpl implements UserPresentation{
                     User user = login();
                     if(user != null) {
                         System.out.println("\nWelcome " + user.getUsername() + "!");
-                        loadUserMenu(user);
+                        displayUserMenu(user);
                     } else {
                         System.out.println("Returning to Main Menu");
                     }
@@ -52,13 +51,10 @@ public class UserPresentationImpl implements UserPresentation{
             //TODO Better feedback when app built out
             System.out.println("ERROR FEEDBACK");
         }
-        loadMainMenu();
+        displayMainMenu();
     }
 
-    public void loadUserMenu(User user) {
-
-        AccountPresentation accountP = new AccountPresentationImpl();
-
+    public void displayUserMenu(User user) {
         Scanner sc = new Scanner(System.in);
         System.out.println("\nUSER MENU");
         System.out.println("==========");
@@ -74,14 +70,15 @@ public class UserPresentationImpl implements UserPresentation{
                 case 0:
                     return;
                 case 1:
-                    accountP.loadUserAccountsIndex(user);
+                    displayUserBankAccounts(user);
                     break;
                 case 2:
-                    accountP.openNewAccountMenu(user);
+                    displayCreateAccountMenu(user);
                     break;
                 case 3:
                     boolean success = loadDeletePath(user);
                     if(success) {
+                        System.out.println(user.getUsername() + "'s profile has been deleted and all accounts closed");
                         return;
                     }
                     break;
@@ -93,7 +90,17 @@ public class UserPresentationImpl implements UserPresentation{
             //TODO fix error feedback with default above as well
             System.out.println("Invalid input");
         }
-        loadUserMenu(user);
+        displayUserMenu(user);
+    }
+
+    public void displayCreateAccountMenu(User user) {
+        AccountPresentation accountP = new AccountPresentationImpl();
+        accountP.displayAccountCreationMenu(user);
+    }
+
+    public void displayUserBankAccounts(User user) {
+        AccountPresentation accountP = new AccountPresentationImpl();
+        accountP.displayAllAccountsMenu(user);
     }
 
     //TODO Create better exit options
@@ -115,11 +122,10 @@ public class UserPresentationImpl implements UserPresentation{
         }
 
         if(sc.hasNextLine()) {
-            username = sc.nextLine();;
+            username = sc.nextLine();
         } else {
             //TODO cleanup error feedback
             System.out.println("Invalid input");
-            login();
         }
 
         System.out.print("Enter your password: ");
@@ -160,13 +166,6 @@ public class UserPresentationImpl implements UserPresentation{
         }
 
         return service.createUser(username, password);
-    }
-
-    public void displayAllUsers() {
-        RevArrayList<User> allUsers = service.getAllUsers();
-        for(int i = 0; i < allUsers.size(); i++) {
-            System.out.println("User: " + allUsers.get(i).getUsername());
-        }
     }
 
     public boolean loadDeletePath(User user) {

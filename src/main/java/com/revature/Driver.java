@@ -7,7 +7,7 @@ public class Driver {
 
         UserPresentationImpl userP = new UserPresentationImpl();
 
-        userP.loadMainMenu();
+        userP.displayMainMenu();
 
     }
 

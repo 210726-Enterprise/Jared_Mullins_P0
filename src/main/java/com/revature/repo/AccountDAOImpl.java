@@ -2,6 +2,7 @@ package com.revature.repo;
 
 import com.revature.collection.RevArrayList;
 import com.revature.model.Account;
+import com.revature.model.Transaction;
 import com.revature.model.User;
 import com.revature.util.ConnectionFactory;
 
@@ -9,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+
 
 public class AccountDAOImpl implements AccountDAO{
 
@@ -69,8 +72,19 @@ public class AccountDAOImpl implements AccountDAO{
     }
 
     @Override
-    public void deleteAccount() {
-
+    public boolean deleteAccount(int accountNumber) {
+        Connection conn = ConnectionFactory.connect();
+        String sql = "DELETE FROM accounts WHERE account_number = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountNumber);
+            ps.executeUpdate();
+            conn.close();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -102,14 +116,29 @@ public class AccountDAOImpl implements AccountDAO{
 
     @Override
     public void updateBalance(int accountNumber, double withdrawalOrDepositAmount) {
+        String type = "DEPOSIT";
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        if(withdrawalOrDepositAmount < 0) {
+            type = "WITHDRAWAL";
+        }
         Connection conn = ConnectionFactory.connect();
         String sql = "UPDATE accounts SET balance = ? WHERE account_number = ?";
+        String sql2 = "INSERT INTO transactions(amount, type, account_number, transaction_date) VALUES (?, ?, ?, ?)";
         try {
             //TODO URGENT figure out why this is rounding to nearest dollar
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDouble(1, selectBalanceByAccountNumber(accountNumber) + withdrawalOrDepositAmount);
             ps.setInt(2, accountNumber);
             ps.execute();
+
+            PreparedStatement ps2 = conn.prepareStatement(sql2);
+            ps2.setDouble(1, withdrawalOrDepositAmount);
+            ps2.setString(2, type);
+            ps2.setInt(3, accountNumber);
+            ps2.setDate(4, sqlDate);
+            ps2.execute();
+
             conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -165,5 +194,92 @@ public class AccountDAOImpl implements AccountDAO{
             throwables.printStackTrace();
         }
         return account;
+    }
+
+    @Override
+    public RevArrayList<Transaction> selectTransactionByAccountNumber(int accountNumber) {
+        RevArrayList<Transaction> transactions = new RevArrayList<>();
+        Connection conn = ConnectionFactory.connect();
+        String sql = "SELECT * FROM transactions WHERE account_number = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountNumber);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                transactions.add(new Transaction(
+                        rs.getInt("transaction_id"),
+                        rs.getInt("amount"),
+                        rs.getString("type"),
+                        rs.getInt("account_number"),
+                        rs.getDate("transaction_date")
+                ));
+            }
+
+            conn.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return transactions;
+    }
+
+    @Override
+    public boolean insertJointAccountHolder(int userId, int accountNumber) {
+        Connection conn = ConnectionFactory.connect();
+        String sql = "INSERT INTO users_accounts (account_number, user_id) VALUES (?, ?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, accountNumber);
+            ps.setInt(2, userId);
+            ps.execute();
+            conn.close();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateTransferAccounts(double transferAmount, int transferFromAccountNumber, int transferToAccountNumber) {
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        Connection conn = ConnectionFactory.connect();
+        String sql = "UPDATE accounts SET balance = ? WHERE account_number = ?";
+        String sql2 = "UPDATE accounts SET balance = ? WHERE account_number = ?";
+        String sql3 = "INSERT INTO transactions(amount, type, account_number, transaction_date) VALUES (?, ?, ?, ?), (?,?,?,?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setDouble(1, selectBalanceByAccountNumber(transferFromAccountNumber) + (transferAmount * -1));
+            ps.setInt(2, transferFromAccountNumber);
+            ps.executeUpdate();
+
+            PreparedStatement ps2 = conn.prepareStatement(sql2);
+            ps2.setDouble(1, selectBalanceByAccountNumber(transferToAccountNumber) + (transferAmount));
+            ps2.setInt(2, transferToAccountNumber);
+            ps2.executeUpdate();
+
+            PreparedStatement ps3 = conn.prepareStatement(sql3);
+            ps3.setDouble(1, transferAmount * -1);
+            ps3.setString(2,"TRANSFER_OUT");
+            ps3.setInt(3, transferFromAccountNumber);
+            ps3.setDate(4, sqlDate);
+
+            ps3.setDouble(5, transferAmount);
+            ps3.setString(6, "TRANSFER_IN");
+            ps3.setInt(7, transferToAccountNumber);
+            ps3.setDate(8, sqlDate);
+            ps3.execute();
+
+            System.out.println("\n*****");
+            System.out.printf("Successfully transferred $%,.2f" + " from " + transferFromAccountNumber + " to " + transferToAccountNumber + "%n", transferAmount);
+            System.out.printf("Account #" + transferFromAccountNumber + " new balance: $%,.2f %n", selectBalanceByAccountNumber(transferFromAccountNumber));
+            System.out.println("*****\n");
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 }

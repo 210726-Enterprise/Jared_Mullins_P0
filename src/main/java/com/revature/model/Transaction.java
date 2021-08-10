@@ -5,18 +5,19 @@ import java.util.Date;
 public class Transaction {
     private int transactionId;
     private double transactionAmount;
-    private String note;
+    private String type;
     private int accountNumber;
     private Date transactionDate;
 
     public Transaction() {
     }
 
-    public Transaction(int transactionId, double transactionAmount, String note, int accountNumber) {
+    public Transaction(int transactionId, double transactionAmount, String type, int accountNumber, Date transactionDate) {
         this.transactionId = transactionId;
         this.transactionAmount = transactionAmount;
-        this.note = note;
+        this.type = type;
         this.accountNumber = accountNumber;
+        this.transactionDate = transactionDate;
     }
 
     @Override
@@ -24,9 +25,13 @@ public class Transaction {
         return "Transaction{" +
                 "transactionId=" + transactionId +
                 ", transactionAmount=" + transactionAmount +
-                ", note='" + note + '\'' +
+                ", type='" + type + '\'' +
                 ", accountNumber=" + accountNumber +
                 '}';
+    }
+
+    public Date getTransactionDate() {
+        return transactionDate;
     }
 
     public int getTransactionId() {
@@ -45,12 +50,12 @@ public class Transaction {
         this.transactionAmount = transactionAmount;
     }
 
-    public String getNote() {
-        return note;
+    public String getType() {
+        return type;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getAccountNumber() {

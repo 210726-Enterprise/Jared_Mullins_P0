@@ -2,6 +2,7 @@ package com.revature.service;
 
 import com.revature.collection.RevArrayList;
 import com.revature.model.Account;
+import com.revature.model.Transaction;
 import com.revature.model.User;
 import com.revature.repo.AccountDAO;
 import com.revature.repo.AccountDAOImpl;
@@ -30,8 +31,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void deleteAccount() {
-
+    public boolean deleteAccount(int accountNumber) {
+        return aDAO.deleteAccount(accountNumber);
     }
 
     @Override
@@ -75,5 +76,33 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public double getBalanceByAccountNumber(int accountNumber) {
         return aDAO.selectBalanceByAccountNumber(accountNumber);
+    }
+
+    @Override
+    public RevArrayList<Transaction> getTransactionsByAccountNumber(int accountNumber) {
+        return aDAO.selectTransactionByAccountNumber(accountNumber);
+    }
+
+    @Override
+    public boolean addJointUser(String username, int accountNumber) {
+        UserService userS = new UserServiceImpl();
+        User user = userS.getUserByUsername(username);
+        if(user != null) {
+            return aDAO.insertJointAccountHolder(user.getUserId(), accountNumber);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean transferFunds(double transferAmount, int transferFromAccountNumber, int transferToAccountNumber) {
+        if(transferAmount < 0) {
+            System.out.println("Transfer amount must be greater than $0.00");
+            return false;
+        }
+        if(aDAO.selectAccountByAccountNumber(transferFromAccountNumber) != null && aDAO.selectAccountByAccountNumber(transferToAccountNumber) != null) {
+            return aDAO.updateTransferAccounts(transferAmount, transferFromAccountNumber, transferToAccountNumber);
+        }
+        System.out.println("Could not locate account for transfer");
+        return false;
     }
 }

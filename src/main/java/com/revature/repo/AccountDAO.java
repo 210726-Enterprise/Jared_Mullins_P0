@@ -2,6 +2,7 @@ package com.revature.repo;
 
 import com.revature.collection.RevArrayList;
 import com.revature.model.Account;
+import com.revature.model.Transaction;
 import com.revature.model.User;
 
 public interface AccountDAO {
@@ -16,7 +17,7 @@ public interface AccountDAO {
     void updateAccount();
 
     //DELETE
-    void deleteAccount();
+    boolean deleteAccount(int accountNumber);
 
     RevArrayList<Account> selectAccountByUserId(int userId);
 
@@ -25,4 +26,10 @@ public interface AccountDAO {
     double selectBalanceByAccountNumber(int accountNumber);
 
     Account selectAccountByAccountNumber(int accountNumber);
+
+    RevArrayList<Transaction> selectTransactionByAccountNumber(int accountNumber);
+
+    boolean insertJointAccountHolder(int userId, int accountNumber);
+
+    boolean updateTransferAccounts(double transferAmount, int transferFromAccountNumber, int transferToAccountNumber);
 }
