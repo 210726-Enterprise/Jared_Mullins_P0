@@ -7,7 +7,7 @@ import com.revature.model.User;
 
 public interface AccountService {
 
-    boolean createAccount(User user, String accountType);
+    boolean createAccount(User user, String accountType, String accountName);
 
     Account getAccountByAccountNumber(int accountNumber);
 

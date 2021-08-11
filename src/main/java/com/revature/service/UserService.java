@@ -12,8 +12,5 @@ public interface UserService {
     User getUserByUsername(String username);
     User getUserByAccountNumber(int accountNumber);
     RevArrayList<User> getAllUsers();
-
-    void updateUser();
-
     void deleteUser(User user);
 }

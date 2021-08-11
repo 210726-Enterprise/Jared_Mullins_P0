@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService{
         }
         User newUser = new User(username, password);
         uDao.insertUser(newUser);
+        System.out.println("Successfully created new user!");
         return true;
     }
 
@@ -59,13 +60,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public RevArrayList<User> getAllUsers() {
         return uDao.selectAllUsers();
-    }
-
-    //UPDATE
-
-    @Override
-    public void updateUser() {
-
     }
 
     //DELETE

@@ -1,0 +1,52 @@
+package com.revature.presentation.UserPresentation;
+
+import com.revature.model.User;
+import com.revature.service.UserService;
+import com.revature.service.UserServiceImpl;
+
+import java.util.Scanner;
+
+public class MainMenu {
+
+    private static UserService service = new UserServiceImpl();
+
+    public static void displayMainMenu() {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nMAIN MENU");
+        System.out.println("==========");
+        System.out.println("What would you like to do?");
+        System.out.println("1) Login");
+        System.out.println("2) Register User Account");
+        System.out.println("0) Close App");
+
+        if(scanner.hasNextInt()) {
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 0:
+                    System.out.println("Goodbye");
+                    return;
+                case 1:
+                    User user = LoginMenu.displayLoginMenu();
+                    if(user != null) {
+                        System.out.println("\nWelcome " + user.getUsername() + "!");
+                        UserMenu.displayUserMenu(user);
+                    } else {
+                        System.out.println("Returning to Main Menu");
+                    }
+                    break;
+                case 2:
+                    boolean success = RegisterNewUserMenu.displayRegistrationMenu();
+                    break;
+                default:
+                    //TODO Better feedback when app built out
+                    System.out.println("Invalid input. Please select a valid menu option");
+                    break;
+            }
+        } else {
+            //TODO Better feedback when app built out
+            System.out.println("Invalid input. Please select a valid menu option");
+        }
+        displayMainMenu();
+    }
+}

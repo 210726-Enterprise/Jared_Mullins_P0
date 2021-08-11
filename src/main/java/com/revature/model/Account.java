@@ -5,15 +5,29 @@ public class Account {
     private double balance;
     private String type;
     private int accountPrimary;
+    private String accountName;
 
     public Account() {
     }
 
-    public Account(int accountNumber, double balance, String type, int accountPrimary) {
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public Account(int accountNumber, double balance, String type, int accountPrimary, String accountName) {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.type = type;
         this.accountPrimary = accountPrimary;
+        this.accountName = accountName;
     }
 
     @Override

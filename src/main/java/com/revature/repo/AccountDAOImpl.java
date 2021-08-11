@@ -16,17 +16,16 @@ import java.util.Date;
 public class AccountDAOImpl implements AccountDAO{
 
     @Override
-    public boolean insertAccount(User user, String accountType) {
-        Connection conn = ConnectionFactory.connect();
-        String sql = "INSERT INTO accounts (balance, account_type, account_primary) values (0, ?, ?)";
+    public boolean insertAccount(User user, String accountType, String accountName) {
+
+        String sql = "INSERT INTO accounts (balance, account_type, account_primary, account_name) values (0, ?, ?, ?)";
         String sql2 = "INSERT INTO users_accounts (account_number, user_id) values (?, ?) ";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql); PreparedStatement ps2 = conn.prepareStatement(sql2)){
             ps.setString(1, accountType);
             ps.setInt(2, user.getUserId());
+            ps.setString(3, accountName);
             ps.execute();
 
-            PreparedStatement ps2 = conn.prepareStatement(sql2);
             ps2.setInt(1, selectAccountByPrimary(user).getAccountNumber());
             ps2.setInt(2, user.getUserId());
             ps2.execute();
@@ -40,10 +39,8 @@ public class AccountDAOImpl implements AccountDAO{
     @Override
     public Account selectAccountByPrimary(User user) {
         Account account = null;
-        Connection conn = ConnectionFactory.connect();
         String sql = "SELECT * FROM accounts WHERE account_primary = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, user.getUserId());
             ResultSet rs = ps.executeQuery();
 
@@ -52,11 +49,10 @@ public class AccountDAOImpl implements AccountDAO{
                         rs.getInt("account_number"),
                         rs.getInt("balance"),
                         rs.getString("account_type"),
-                        rs.getInt("account_primary")
+                        rs.getInt("account_primary"),
+                        rs.getString("account_name")
                 );
             }
-
-            conn.close();
 
             return account;
 
@@ -73,13 +69,11 @@ public class AccountDAOImpl implements AccountDAO{
 
     @Override
     public boolean deleteAccount(int accountNumber) {
-        Connection conn = ConnectionFactory.connect();
+
         String sql = "DELETE FROM accounts WHERE account_number = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, accountNumber);
             ps.executeUpdate();
-            conn.close();
             return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -90,10 +84,9 @@ public class AccountDAOImpl implements AccountDAO{
     @Override
     public RevArrayList<Account> selectAccountByUserId(int userId) {
         RevArrayList<Account> accounts = new RevArrayList<>();
-        Connection conn = ConnectionFactory.connect();
         String sql = "SELECT * FROM accounts WHERE account_number IN (SELECT account_number FROM users_accounts WHERE user_id = ?)";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql);) {
+
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
@@ -102,11 +95,10 @@ public class AccountDAOImpl implements AccountDAO{
                         rs.getInt("account_number"),
                         rs.getInt("balance"),
                         rs.getString("account_type"),
-                        rs.getInt("account_primary")
+                        rs.getInt("account_primary"),
+                        rs.getString("account_name")
                 ));
             }
-
-            conn.close();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -122,24 +114,25 @@ public class AccountDAOImpl implements AccountDAO{
         if(withdrawalOrDepositAmount < 0) {
             type = "WITHDRAWAL";
         }
-        Connection conn = ConnectionFactory.connect();
         String sql = "UPDATE accounts SET balance = ? WHERE account_number = ?";
         String sql2 = "INSERT INTO transactions(amount, type, account_number, transaction_date) VALUES (?, ?, ?, ?)";
-        try {
+        try (
+                Connection conn = ConnectionFactory.connect();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                PreparedStatement ps2 = conn.prepareStatement(sql2);
+                ) {
             //TODO URGENT figure out why this is rounding to nearest dollar
-            PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setDouble(1, selectBalanceByAccountNumber(accountNumber) + withdrawalOrDepositAmount);
             ps.setInt(2, accountNumber);
             ps.execute();
 
-            PreparedStatement ps2 = conn.prepareStatement(sql2);
             ps2.setDouble(1, withdrawalOrDepositAmount);
             ps2.setString(2, type);
             ps2.setInt(3, accountNumber);
             ps2.setDate(4, sqlDate);
             ps2.execute();
 
-            conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -148,11 +141,9 @@ public class AccountDAOImpl implements AccountDAO{
     @Override
     public double selectBalanceByAccountNumber(int accountNumber) {
         double balance = 0;
-        Connection conn = ConnectionFactory.connect();
         String sql = "SELECT balance FROM accounts WHERE account_number = ?";
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setInt(1, accountNumber);
             ResultSet rs = ps.executeQuery();
 
@@ -160,7 +151,6 @@ public class AccountDAOImpl implements AccountDAO{
                 balance = rs.getDouble("balance");
             }
 
-            conn.close();
             return balance;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -172,10 +162,10 @@ public class AccountDAOImpl implements AccountDAO{
     @Override
     public Account selectAccountByAccountNumber(int accountNumber) {
         Account account = null;
-        Connection conn = ConnectionFactory.connect();
+
         String sql = "SELECT * FROM accounts WHERE account_number = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)){
+
             ps.setInt(1, accountNumber);
             ResultSet rs = ps.executeQuery();
 
@@ -184,11 +174,11 @@ public class AccountDAOImpl implements AccountDAO{
                         rs.getInt("account_number"),
                         rs.getInt("balance"),
                         rs.getString("account_type"),
-                        rs.getInt("account_primary")
+                        rs.getInt("account_primary"),
+                        rs.getString("account_name")
                 );
             }
 
-            conn.close();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -209,7 +199,7 @@ public class AccountDAOImpl implements AccountDAO{
             while(rs.next()) {
                 transactions.add(new Transaction(
                         rs.getInt("transaction_id"),
-                        rs.getInt("amount"),
+                        rs.getDouble("amount"),
                         rs.getString("type"),
                         rs.getInt("account_number"),
                         rs.getDate("transaction_date")
@@ -226,14 +216,11 @@ public class AccountDAOImpl implements AccountDAO{
 
     @Override
     public boolean insertJointAccountHolder(int userId, int accountNumber) {
-        Connection conn = ConnectionFactory.connect();
         String sql = "INSERT INTO users_accounts (account_number, user_id) VALUES (?, ?)";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect();PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, accountNumber);
             ps.setInt(2, userId);
             ps.execute();
-            conn.close();
             return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -245,22 +232,26 @@ public class AccountDAOImpl implements AccountDAO{
     public boolean updateTransferAccounts(double transferAmount, int transferFromAccountNumber, int transferToAccountNumber) {
         Date date = new Date();
         java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-        Connection conn = ConnectionFactory.connect();
         String sql = "UPDATE accounts SET balance = ? WHERE account_number = ?";
         String sql2 = "UPDATE accounts SET balance = ? WHERE account_number = ?";
         String sql3 = "INSERT INTO transactions(amount, type, account_number, transaction_date) VALUES (?, ?, ?, ?), (?,?,?,?)";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (
+                Connection conn = ConnectionFactory.connect();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                PreparedStatement ps2 = conn.prepareStatement(sql2);
+                PreparedStatement ps3 = conn.prepareStatement(sql3);
+                ) {
+
             ps.setDouble(1, selectBalanceByAccountNumber(transferFromAccountNumber) + (transferAmount * -1));
             ps.setInt(2, transferFromAccountNumber);
             ps.executeUpdate();
 
-            PreparedStatement ps2 = conn.prepareStatement(sql2);
+
             ps2.setDouble(1, selectBalanceByAccountNumber(transferToAccountNumber) + (transferAmount));
             ps2.setInt(2, transferToAccountNumber);
             ps2.executeUpdate();
 
-            PreparedStatement ps3 = conn.prepareStatement(sql3);
+
             ps3.setDouble(1, transferAmount * -1);
             ps3.setString(2,"TRANSFER_OUT");
             ps3.setInt(3, transferFromAccountNumber);

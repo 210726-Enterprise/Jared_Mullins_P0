@@ -16,8 +16,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean createAccount(User user, String accountType) {
-        return aDAO.insertAccount(user, accountType);
+    public boolean createAccount(User user, String accountType, String accountName) {
+        return aDAO.insertAccount(user, accountType, accountName);
     }
 
     @Override
@@ -86,9 +86,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean addJointUser(String username, int accountNumber) {
         UserService userS = new UserServiceImpl();
+        RevArrayList<User> allUsers = userS.getAllUsers();
         User user = userS.getUserByUsername(username);
-        if(user != null) {
-            return aDAO.insertJointAccountHolder(user.getUserId(), accountNumber);
+        for(int i = 0; i < allUsers.size(); i++) {
+            if(username.equals(allUsers.get(i).getUsername()) && user != null) {
+                return aDAO.insertJointAccountHolder(user.getUserId(), accountNumber);
+            }
         }
         return false;
     }
@@ -96,13 +99,26 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean transferFunds(double transferAmount, int transferFromAccountNumber, int transferToAccountNumber) {
         if(transferAmount < 0) {
+            System.out.println("\n*****");
             System.out.println("Transfer amount must be greater than $0.00");
+            System.out.println("*****");
             return false;
         }
+
+        if(transferAmount > getBalanceByAccountNumber(transferFromAccountNumber)) {
+            System.out.println("\n*****");
+            System.out.println("Insufficient funds for transfer.");
+            System.out.printf("Current balance for account #" + transferFromAccountNumber + ": $%,.2f %n", getBalanceByAccountNumber(transferFromAccountNumber));
+            System.out.println("*****");
+            return false;
+        }
+
         if(aDAO.selectAccountByAccountNumber(transferFromAccountNumber) != null && aDAO.selectAccountByAccountNumber(transferToAccountNumber) != null) {
             return aDAO.updateTransferAccounts(transferAmount, transferFromAccountNumber, transferToAccountNumber);
         }
+        System.out.println("\n*****");
         System.out.println("Could not locate account for transfer");
+        System.out.println("*****");
         return false;
     }
 }

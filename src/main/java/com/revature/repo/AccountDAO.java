@@ -8,7 +8,7 @@ import com.revature.model.User;
 public interface AccountDAO {
 
     //CREATE
-    boolean insertAccount(User user, String accountType);
+    boolean insertAccount(User user, String accountType, String accountName);
 
     //READ
     Account selectAccountByPrimary(User user);

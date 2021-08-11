@@ -15,16 +15,12 @@ public class UserDAOImpl implements UserDAO{
     //CREATE
 
     public void insertUser(User user) {
-        Connection conn = ConnectionFactory.connect();
         String sql = "INSERT INTO users (username, password) values (?, ?)";
 
-        try {
-
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
             ps.execute();
-            conn.close();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -36,12 +32,9 @@ public class UserDAOImpl implements UserDAO{
     @Override
     public User selectUserByUsername(String username) {
         User user = null;
-        Connection conn = ConnectionFactory.connect();
         String sql = "SELECT * FROM users WHERE username = ?";
 
-        try {
-
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
@@ -63,12 +56,10 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public RevArrayList<User> selectAllUsers() {
-        RevArrayList<User> allUsers = new RevArrayList<>();
-        Connection conn = ConnectionFactory.connect();
+        RevArrayList<User> allUsers = new RevArrayList<>();;
         String sql = "SELECT * FROM users";
 
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql);) {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
@@ -95,13 +86,11 @@ public class UserDAOImpl implements UserDAO{
 
     @Override
     public void deleteUser(User user) {
-        Connection conn = ConnectionFactory.connect();
+
         String sql = "DELETE FROM users WHERE user_id = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionFactory.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, user.getUserId());
             ps.execute();
-            conn.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
