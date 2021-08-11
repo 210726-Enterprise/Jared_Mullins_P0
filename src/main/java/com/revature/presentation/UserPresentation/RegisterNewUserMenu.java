@@ -1,7 +1,6 @@
 package com.revature.presentation.UserPresentation;
 
 import com.revature.service.UserService;
-import com.revature.service.UserServiceImpl;
 
 import java.util.Scanner;
 
@@ -10,7 +9,7 @@ public class RegisterNewUserMenu {
     /**
      * User Service object for service layer logic
      */
-    private static UserService service = new UserServiceImpl();
+    private static UserService service = new UserService();
 
     /**
      * Walks through registration process for registering a new user

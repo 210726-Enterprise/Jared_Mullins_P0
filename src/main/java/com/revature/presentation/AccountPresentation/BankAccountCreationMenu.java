@@ -3,7 +3,7 @@ package com.revature.presentation.AccountPresentation;
 import com.revature.collection.RevArrayList;
 import com.revature.model.Account;
 import com.revature.model.User;
-import com.revature.service.AccountServiceImpl;
+import com.revature.service.AccountService;
 
 import java.util.Scanner;
 
@@ -13,7 +13,7 @@ public class BankAccountCreationMenu {
     /**
      * Account Service object for service layer logic
      */
-    private static AccountServiceImpl service = new AccountServiceImpl();
+    private static AccountService service = new AccountService();
 
 
     /**

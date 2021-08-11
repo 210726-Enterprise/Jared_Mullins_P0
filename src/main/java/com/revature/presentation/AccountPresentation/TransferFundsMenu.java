@@ -4,7 +4,6 @@ import com.revature.collection.RevArrayList;
 import com.revature.model.Account;
 import com.revature.model.User;
 import com.revature.service.AccountService;
-import com.revature.service.AccountServiceImpl;
 
 import java.util.Scanner;
 
@@ -13,7 +12,7 @@ public class TransferFundsMenu {
     /**
      * Account Service object for service layer logic
      */
-    private static AccountService service = new AccountServiceImpl();
+    private static AccountService service = new AccountService();
 
 
     /**

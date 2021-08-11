@@ -5,9 +5,7 @@ import com.revature.model.Account;
 import com.revature.model.Transaction;
 import com.revature.model.User;
 import com.revature.service.AccountService;
-import com.revature.service.AccountServiceImpl;
 import com.revature.service.UserService;
-import com.revature.service.UserServiceImpl;
 
 import java.util.Scanner;
 
@@ -16,7 +14,7 @@ public class AccountMenu {
     /**
      * Account Service object for service layer logic
      */
-    private static AccountService service = new AccountServiceImpl();
+    private static AccountService service = new AccountService();
 
     /**
      * Displays the options available for an account. Only primary users have access to options 6 and 7.
@@ -131,7 +129,7 @@ public class AccountMenu {
      * @return true if joint user was added successfully; false otherwise
      */
     private static boolean displayAddJointUserMenu(Account account) {
-        UserService userS = new UserServiceImpl();
+        UserService userS = new UserService();
         String username = "";
         Scanner sc = new Scanner(System.in);
         System.out.printf("\nPlease enter the username of the user you wish to add to your account: ");
@@ -172,7 +170,7 @@ public class AccountMenu {
      * @return true if user is successfully deleted; false otherwise
      */
     private static boolean displayAccountDeletePath(Account account) {
-        UserServiceImpl userS = new UserServiceImpl();
+        UserService userS = new UserService();
         Scanner sc = new Scanner(System.in);
         System.out.println("\n***WARNING: Closing your account will permanently delete all records associated with account #" + account.getAccountNumber());
         System.out.println("\nWould you like to proceed? y/n");

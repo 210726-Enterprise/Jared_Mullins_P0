@@ -2,7 +2,6 @@ package com.revature.presentation.UserPresentation;
 
 import com.revature.model.User;
 import com.revature.service.UserService;
-import com.revature.service.UserServiceImpl;
 
 import java.util.Scanner;
 
@@ -11,7 +10,7 @@ public class MainMenu {
     /**
      * User Service object for service layer logic
      */
-    private static UserService service = new UserServiceImpl();
+    private static UserService service = new UserService();
 
     /**
      * LAUNCHES APPLICATION

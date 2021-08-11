@@ -4,7 +4,6 @@ import com.revature.model.User;
 import com.revature.presentation.AccountPresentation.AccountSelectMenu;
 import com.revature.presentation.AccountPresentation.BankAccountCreationMenu;
 import com.revature.service.UserService;
-import com.revature.service.UserServiceImpl;
 
 import java.util.Scanner;
 
@@ -13,7 +12,7 @@ public class UserMenu {
     /**
      * User Service object for service layer logic
      */
-    private static UserService service = new UserServiceImpl();
+    private static UserService service = new UserService();
 
     /**
      * Walks through options for a logged in user
