@@ -142,7 +142,6 @@ public class AccountDAO {
                 PreparedStatement ps = conn.prepareStatement(sql);
                 PreparedStatement ps2 = conn.prepareStatement(sql2);
                 ) {
-            //TODO URGENT figure out why this is rounding to nearest dollar
 
             ps.setDouble(1, selectBalanceByAccountNumber(accountNumber) + withdrawalOrDepositAmount);
             ps.setInt(2, accountNumber);
@@ -181,8 +180,8 @@ public class AccountDAO {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        //TODO figure out a better bad return
-        return -1;
+
+        return 0;
     }
 
 

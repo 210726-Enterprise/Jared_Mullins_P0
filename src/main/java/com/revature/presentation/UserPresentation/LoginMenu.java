@@ -27,24 +27,30 @@ public class LoginMenu {
         System.out.print("\nEnter your username: ");
 
         if(sc.hasNextInt()) {
-            if(sc.nextInt() == 0) return null;
-            //TODO clean up feedback
-            System.out.println("Invalid input");
+            if(sc.nextInt() == 0) {
+                return null;
+            } else {
+                System.out.println("\n*****");
+                System.out.println("Invalid input");
+                System.out.println("*****");
+            }
         }
 
         if(sc.hasNextLine()) {
             username = sc.nextLine();
         } else {
-            //TODO cleanup error feedback
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
         }
 
         System.out.print("Enter your password: ");
         if(sc.hasNextLine()) {
             password = sc.nextLine();
         } else {
-            //TODO cleanup error feedback
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
         }
         return service.verifyUser(username, password);
     }

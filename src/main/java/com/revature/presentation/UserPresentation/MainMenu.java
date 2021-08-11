@@ -38,20 +38,22 @@ public class MainMenu {
                         System.out.println("\nWelcome " + user.getUsername() + "!");
                         UserMenu.displayUserMenu(user);
                     } else {
-                        System.out.println("Returning to Main Menu");
+                        System.out.println("Returning to Main Menu...");
                     }
                     break;
                 case 2:
-                    boolean success = RegisterNewUserMenu.displayRegistrationMenu();
+                    RegisterNewUserMenu.displayRegistrationMenu();
                     break;
                 default:
-                    //TODO Better feedback when app built out
+                    System.out.println("\n*****");
                     System.out.println("Invalid input. Please select a valid menu option");
+                    System.out.println("*****");
                     break;
             }
         } else {
-            //TODO Better feedback when app built out
+            System.out.println("\n*****");
             System.out.println("Invalid input. Please select a valid menu option");
+            System.out.println("*****");
         }
         displayMainMenu();
     }

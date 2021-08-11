@@ -44,7 +44,6 @@ public class AccountMenu {
                     System.out.println("Returning to all accounts...");
                     return;
                 case 1:
-                    //TODO getting the account balance may not work correctly
                     System.out.println("\n*****");
                     System.out.printf("Current Balance: $%,.2f %n", service.getBalanceByAccountNumber(account.getAccountNumber()));
                     System.out.println("*****");
@@ -63,8 +62,9 @@ public class AccountMenu {
                         }
 
                     } else {
-                        //TODO clean up error feedback
+                        System.out.println("\n*****");
                         System.out.println("Invalid deposit amount");
+                        System.out.println("*****");
                     }
                     break;
 
@@ -82,8 +82,9 @@ public class AccountMenu {
                         }
 
                     } else {
-                        //TODO clean up error feedback
+                        System.out.println("\n*****");
                         System.out.println("Invalid withdrawal amount");
+                        System.out.println("*****");
                     }
                     break;
 
@@ -97,7 +98,9 @@ public class AccountMenu {
                     if(user.getUserId() == account.getAccountPrimary()) {
                         displayAddJointUserMenu(account);
                     } else {
+                        System.out.println("\n*****");
                         System.out.println("Invalid account menu choice");
+                        System.out.println("*****");
                     }
                     break;
                 case 7:
@@ -107,16 +110,21 @@ public class AccountMenu {
                             return;
                         }
                     } else {
+                        System.out.println("\n*****");
                         System.out.println("Invalid account menu choice");
+                        System.out.println("*****");
                     }
                     break;
                 default:
+                    System.out.println("\n*****");
                     System.out.println("Invalid account menu choice");
+                    System.out.println("*****");
                     break;
             }
         } else {
-            //TODO clean up feedback
+            System.out.println("\n*****");
             System.out.println("Invalid account menu choice");
+            System.out.println("*****");
         }
 
         displayAccountMenu(user, account);
@@ -146,7 +154,9 @@ public class AccountMenu {
                 System.out.println("*****");
             }
         } else {
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
         }
         return false;
     }
@@ -201,10 +211,14 @@ public class AccountMenu {
                                 return true;
                             }
                         } else {
+                            System.out.println("\n*****");
                             System.out.println("Incorrect username. Returning to Account Menu...");
+                            System.out.println("*****");
                         }
                     } else {
-                        System.out.println("Invalid input. Returning to Account Menu");
+                        System.out.println("\n*****");
+                        System.out.println("Invalid input. Returning to Account Menu...");
+                        System.out.println("*****");
                     }
                     break;
 
@@ -212,7 +226,12 @@ public class AccountMenu {
                     System.out.println("Returning to Account Menu...");
                     break;
             }
-        } return false;
+        } else {
+            System.out.println("\n*****");
+            System.out.println("Invalid input. Returning to Account Menu...");
+            System.out.println("*****");
+        }
+        return false;
     }
 
 }

@@ -26,8 +26,9 @@ public class RegisterNewUserMenu {
         if(scanner.hasNextLine()) {
             username = scanner.nextLine();
         } else {
-            //TODO Give better error feedback when more fully built out
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
             return false;
         }
 
@@ -35,8 +36,9 @@ public class RegisterNewUserMenu {
         if(scanner.hasNextLine()) {
             password = scanner.nextLine();
         } else {
-            //TODO Give better error feedback when more fully built out
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
             return false;
         }
 

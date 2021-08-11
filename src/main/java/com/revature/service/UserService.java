@@ -23,13 +23,17 @@ public class UserService {
 
         for(int i = 0; i < allUsers.size(); i++) {
             if(username.equals(allUsers.get(i).getUsername())) {
-                System.out.println("\nSorry, that username is already taken.");
+                System.out.println("\n*****");
+                System.out.println("Sorry, that username is already taken.");
+                System.out.println("*****");
                 return false;
             }
         }
         User newUser = new User(username, password);
         uDao.insertUser(newUser);
+        System.out.println("\n*****");
         System.out.println("Successfully created new user!");
+        System.out.println("*****");
         return true;
     }
 
@@ -46,8 +50,9 @@ public class UserService {
         if(user != null && user.getPassword().equals(password)) {
             return user;
         } else {
-            //TODO cleanup feedback
+            System.out.println("\n*****");
             System.out.println("Incorrect username or password");
+            System.out.println("*****");
         }
         return null;
     }

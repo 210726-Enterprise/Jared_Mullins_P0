@@ -41,13 +41,13 @@ public class AccountSelectMenu {
                     accounts.get(i - 1).getAccountNumber() + " " +
                     (accounts.get(i - 1).getAccountName() != null ? "(" + accounts.get(i - 1).getAccountName() + ")" : ""));
         }
-        System.out.println("0) Return to user menu");
+        System.out.println("0) Return to user menu...");
 
         if(sc.hasNextInt()) {
             int choice = sc.nextInt();
 
             if(choice == 0) {
-                System.out.println("Returning to User Menu");
+                System.out.println("Returning to User Menu...");
                 return;
             }
 
@@ -57,8 +57,9 @@ public class AccountSelectMenu {
                 }
             }
         } else {
-            //TODO Clean up feedback
+            System.out.println("\n*****");
             System.out.println("Invalid Input");
+            System.out.println("*****");
         }
         displayAllAccountsMenu(user);
     }

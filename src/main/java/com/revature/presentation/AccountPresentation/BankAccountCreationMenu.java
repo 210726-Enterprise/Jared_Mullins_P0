@@ -54,7 +54,9 @@ public class BankAccountCreationMenu {
                         System.out.println();
                         return;
                     } else {
+                        System.out.println("\n*****");
                         System.out.println("Could not create account");
+                        System.out.println("*****");
                     }
                     break;
                 case 2:
@@ -74,17 +76,21 @@ public class BankAccountCreationMenu {
                         }
                         return;
                     } else {
+                        System.out.println("\n*****");
                         System.out.println("Could not create account");
+                        System.out.println("*****");
                     }
                     break;
                 case 3:
-                    //TODO fix feedback
-                    System.out.println("Invalid Input. Please enter 0, 1, or 2");
+                    System.out.println("\n*****");
+                    System.out.println("Invalid Input.");
+                    System.out.println("*****");
                     break;
             }
         } else {
-            //TODO fix feedback
+            System.out.println("\n*****");
             System.out.println("Invalid Input");
+            System.out.println("*****");
         }
 
         displayAccountCreationMenu(user);
@@ -110,17 +116,24 @@ public class BankAccountCreationMenu {
                         accountName = sc.nextLine();
                         return accountName;
                     } else {
+                        System.out.println("\n*****");
                         System.out.println("Invalid input. Returning to Account Creation Menu...");
+                        System.out.println("*****");
                     }
                     break;
                 case "n":
                     return accountName;
                 default:
+                    System.out.println("\n*****");
                     System.out.println("Invalid input. Please enter \"y\" or \"n\"");
+                    System.out.println("*****");
                     accountName = nameAccount();
+                    break;
             }
         } else {
+            System.out.println("\n*****");
             System.out.println("Invalid input. Returning to Account Creation Menu...");
+            System.out.println("*****");
         }
 
         return accountName;

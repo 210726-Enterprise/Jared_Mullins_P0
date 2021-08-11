@@ -23,7 +23,6 @@ public class TransferFundsMenu {
      */
     public static boolean displayTransferFundsMenu(User user, int accountNumber) {
         Scanner sc = new Scanner(System.in);
-        //TODO get my accounts to display properly (do not include account being transferred from
         RevArrayList<Account> accounts = service.getAccountByUserId(user.getUserId());
         for(int i = 0; i < accounts.size(); i++) {
             if(accounts.get(i).getAccountNumber() == accountNumber) {
@@ -60,7 +59,9 @@ public class TransferFundsMenu {
                 }
             }
         } else {
+            System.out.println("\n*****");
             System.out.println("Invalid input. Returning to Account Menu...");
+            System.out.println("*****");
         }
         return false;
     }
@@ -79,6 +80,11 @@ public class TransferFundsMenu {
 
         if(sc.hasNextDouble()) {
             transferAmount = sc.nextDouble();
+        } else {
+            System.out.println("\n*****");
+            System.out.println("Invalid transfer amount");
+            System.out.println("*****");
+            return false;
         }
         return service.transferFunds(transferAmount, transferFromAccountNumber, transferToAccountNumber);
     }
@@ -97,15 +103,22 @@ public class TransferFundsMenu {
         System.out.print("\nEnter the account number you wish to transfer funds to: ");
 
         if(sc.hasNextInt()) {
-            //TODO Validate that account number exists in db
             transferToAccountNumber = sc.nextInt();
         } else {
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
+            return false;
         }
 
         System.out.println("How much would you like to transfer?");
         if(sc.hasNextDouble()) {
             transferAmount = sc.nextDouble();
+        } else {
+            System.out.println("\n*****");
+            System.out.println("Invalid transfer amount");
+            System.out.println("*****");
+            return false;
         }
 
         return service.transferFunds(transferAmount, transferFromAccountNumber, transferToAccountNumber);

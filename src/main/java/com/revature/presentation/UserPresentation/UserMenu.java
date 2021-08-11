@@ -50,12 +50,15 @@ public class UserMenu {
                     }
                     break;
                 default:
+                    System.out.println("\n*****");
                     System.out.println("Invalid input");
+                    System.out.println("*****");
                     break;
             }
         } else {
-            //TODO fix error feedback with default above as well
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
         }
         displayUserMenu(user);
     }
@@ -82,12 +85,14 @@ public class UserMenu {
                             service.deleteUser(user);
                             return true;
                         } else {
-                            //TODO clean up feedback
+                            System.out.println("\n*****");
                             System.out.println("Could not delete user");
+                            System.out.println("*****");
                         }
                     } else {
-                        //TODO clean up feedback
+                        System.out.println("\n*****");
                         System.out.println("Invalid input");
+                        System.out.println("*****");
                     }
                     break;
 
@@ -96,13 +101,15 @@ public class UserMenu {
                     return false;
 
                 default:
-                    //TODO clean up feedback
+                    System.out.println("\n*****");
                     System.out.println("Invalid input");
+                    System.out.println("*****");
                     break;
             }
         } else {
-            //TODO clean up feedback
+            System.out.println("\n*****");
             System.out.println("Invalid input");
+            System.out.println("*****");
         }
         return false;
     }
