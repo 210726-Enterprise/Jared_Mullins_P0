@@ -9,8 +9,18 @@ import java.util.Scanner;
 
 public class BankAccountCreationMenu {
 
+
+    /**
+     * Account Service object for service layer logic
+     */
     private static AccountServiceImpl service = new AccountServiceImpl();
 
+
+    /**
+     * account creation menu.
+     * Walks through options of what type of account user wants to create, and if they want to give the account a friendly name
+     * @param user currently logged in user
+     */
     public static void displayAccountCreationMenu(User user) {
         Scanner sc = new Scanner(System.in);
         System.out.println("\nCREATING NEW ACCOUNT FOR " + user.getUsername());
@@ -38,6 +48,10 @@ public class BankAccountCreationMenu {
                         System.out.println("Account Number: " + newAccount.getAccountNumber());
                         System.out.println("Account Type: " + newAccount.getType());
                         System.out.printf("Account Balance: $%,.2f %n", newAccount.getBalance());
+                        if(newAccount.getAccountName() != null) {
+                            System.out.println("Account Name: " + newAccount.getAccountName());
+                        }
+                        System.out.println();
                         return;
                     } else {
                         System.out.println("Could not create account");
@@ -76,6 +90,11 @@ public class BankAccountCreationMenu {
         displayAccountCreationMenu(user);
     }
 
+
+    /**
+     * displays if user chooses to give account a friendly name
+     * @return name the user gives the account
+     */
     private static String nameAccount() {
         String accountName = null;
         Scanner sc = new Scanner(System.in);

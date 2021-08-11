@@ -8,8 +8,15 @@ import java.util.Scanner;
 
 public class MainMenu {
 
+    /**
+     * User Service object for service layer logic
+     */
     private static UserService service = new UserServiceImpl();
 
+    /**
+     * LAUNCHES APPLICATION
+     * Walks through initial options (Log in, register, or close app)
+     */
     public static void displayMainMenu() {
 
         Scanner scanner = new Scanner(System.in);

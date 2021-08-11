@@ -13,8 +13,16 @@ import java.util.Scanner;
 
 public class AccountMenu {
 
+    /**
+     * Account Service object for service layer logic
+     */
     private static AccountService service = new AccountServiceImpl();
 
+    /**
+     * Displays the options available for an account. Only primary users have access to options 6 and 7.
+     * @param user currently logged in user
+     * @param account account currently being accessed by account holder
+     */
     public static void displayAccountMenu(User user, Account account) {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n" + account.getType().toUpperCase() + " ACCOUNT " + account.getAccountNumber() + " MENU");
@@ -116,6 +124,12 @@ public class AccountMenu {
         displayAccountMenu(user, account);
     }
 
+
+    /**
+     * Displays the menu path for adding a joint user to a user's account. Only available to primary users
+     * @param account account that is adding a joint user
+     * @return true if joint user was added successfully; false otherwise
+     */
     private static boolean displayAddJointUserMenu(Account account) {
         UserService userS = new UserServiceImpl();
         String username = "";
@@ -139,6 +153,10 @@ public class AccountMenu {
         return false;
     }
 
+    /**
+     * displays full transaction history for account
+     * @param accountNumber account number of accounts whose transactions will be displayed
+     */
     private static void displayTransactions(int accountNumber) {
         RevArrayList<Transaction> transactions = service.getTransactionsByAccountNumber(accountNumber);
         for(int i = 0; i < transactions.size(); i++) {
@@ -148,6 +166,11 @@ public class AccountMenu {
         }
     }
 
+    /**
+     * displays delete path for account currently being accessed. Only accessible by the primary account holder.
+     * @param account account currently being accessed
+     * @return true if user is successfully deleted; false otherwise
+     */
     private static boolean displayAccountDeletePath(Account account) {
         UserServiceImpl userS = new UserServiceImpl();
         Scanner sc = new Scanner(System.in);

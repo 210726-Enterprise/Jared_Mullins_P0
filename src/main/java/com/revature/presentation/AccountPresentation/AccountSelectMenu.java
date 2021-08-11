@@ -10,8 +10,17 @@ import java.util.Scanner;
 
 public class AccountSelectMenu {
 
+    /**
+     * Account Service object for service layer logic
+     */
     private static AccountService service = new AccountServiceImpl();
 
+
+    /**
+     * Shows all accounts associated with user (primary and joint)
+     * User can access accounts from this menu
+     * @param user currently logged in user
+     */
     public static void displayAllAccountsMenu(User user) {
         Scanner sc = new Scanner(System.in);
         RevArrayList<Account> accounts = service.getAccountByUserId(user.getUserId());

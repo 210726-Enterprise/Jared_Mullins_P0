@@ -7,8 +7,15 @@ import java.util.Scanner;
 
 public class RegisterNewUserMenu {
 
+    /**
+     * User Service object for service layer logic
+     */
     private static UserService service = new UserServiceImpl();
 
+    /**
+     * Walks through registration process for registering a new user
+     * @return true if successfully registers a user; false otherwise
+     */
     public static boolean displayRegistrationMenu() {
         String username = null;
         String password = null;

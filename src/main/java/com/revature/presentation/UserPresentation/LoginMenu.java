@@ -8,8 +8,15 @@ import java.util.Scanner;
 
 public class LoginMenu {
 
+    /**
+     * User Service object for service layer logic
+     */
     private static UserService service = new UserServiceImpl();
 
+    /**
+     * Walks through the login process
+     * @return returns a User object if the account is verified; false otherwise
+     */
     public static User displayLoginMenu() {
         User user = null;
         String username = null;

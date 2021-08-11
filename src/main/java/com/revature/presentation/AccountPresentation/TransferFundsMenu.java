@@ -10,8 +10,18 @@ import java.util.Scanner;
 
 public class TransferFundsMenu {
 
+    /**
+     * Account Service object for service layer logic
+     */
     private static AccountService service = new AccountServiceImpl();
 
+
+    /**
+     * Menu for transferring funds. Can transfer to an account owned by the user, or an external one if an account number is provided
+     * @param user currently logged in user
+     * @param accountNumber account number of account that money is being transferred out of
+     * @return true if transfer is successful; false otherwise
+     */
     public static boolean displayTransferFundsMenu(User user, int accountNumber) {
         Scanner sc = new Scanner(System.in);
         //TODO get my accounts to display properly (do not include account being transferred from
@@ -57,8 +67,12 @@ public class TransferFundsMenu {
     }
 
 
-
-
+    /**
+     * Walks through options for an internal transfer
+     * @param transferFromAccountNumber account number being transferred from
+     * @param transferToAccountNumber account number receiving the funds
+     * @return true if transaction is successful; false otherwise
+     */
     private static boolean displayInternalAccountTransferMenu(int transferFromAccountNumber, int transferToAccountNumber) {
         double transferAmount = 0;
         Scanner sc = new Scanner(System.in);
@@ -72,7 +86,11 @@ public class TransferFundsMenu {
 
 
 
-
+    /**
+     * Walks through options for an external transfer
+     * @param transferFromAccountNumber account number being transferred from
+     * @return true if transaction is successful; false otherwise
+     */
     private static boolean displayExternalAccountTransferMenu(int transferFromAccountNumber) {
         int transferToAccountNumber = 0;
         double transferAmount = 0;
